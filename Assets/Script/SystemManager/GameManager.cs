@@ -1,10 +1,10 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     // 싱글톤 인스턴스
     private static GameManager _instance;
-
     // 다른 스크립트에서 GameManager에 접근할 수 있는 프로퍼티
     public static GameManager Instance
     {
