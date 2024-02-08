@@ -14,7 +14,7 @@ public class DBManager : MonoBehaviour
     public bool ConnectionTest()
     {
         string conStr = string.Format("Server={0};Database={1};Uid={2};Pwd={3};SslMode=None;",
-            "localhost", "atm", "root", "pcj52300!");
+            "127.0.0.1", "atm", "root", "pcj52300!");
 
         try
         {
