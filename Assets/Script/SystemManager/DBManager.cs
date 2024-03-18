@@ -13,7 +13,7 @@ public class DBManager : MonoBehaviour
 
     public bool ConnectionTest()
     {
-        string conStr = string.Format("Server={0};Database={1};Uid={2};Pwd={3};SslMode=None;",
+        string conStr = string.Format("Server={0};Database={1};Uid={2};Pwd={3};SslMode=None; OldGuids=True;",
             "127.0.0.1", "atm", "root", "pcj52300!");
 
         try
@@ -21,6 +21,7 @@ public class DBManager : MonoBehaviour
             using (MySqlConnection con = new MySqlConnection(conStr))
             {
                 con.Open();
+                Debug.Log("success");
             }
 
             return true;
