@@ -1,0 +1,9 @@
+newmtl Default
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+illum 0
+map_Ka Dai_OK.jpg
+map_Kd Dai_OK.jpg
+map_Ks Dai_OK.jpg
+
