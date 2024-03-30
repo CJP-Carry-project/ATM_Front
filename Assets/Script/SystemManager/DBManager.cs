@@ -2,20 +2,21 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class DBManager : MonoBehaviour
 {
     private void Start()
     {
-        Debug.Log("Connection Test: "+ ConnectionTest());
+        Debug.Log("Connection Test: " + ConnectionTest());
     }
 
     public bool ConnectionTest()
     {
         string conStr = string.Format("Server={0};Database={1};Uid={2};Pwd={3};SslMode=None; OldGuids=True;",
             "127.0.0.1", "atm", "root", "pcj52300!");
-
+        
         try
         {
             using (MySqlConnection con = new MySqlConnection(conStr))
