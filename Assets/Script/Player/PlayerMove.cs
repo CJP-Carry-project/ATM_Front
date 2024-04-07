@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour
         cc = GetComponent<CharacterController>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         float h = Input.GetAxis("Horizontal"); // 좌 우
         float v = Input.GetAxis("Vertical"); // 앞 뒤
