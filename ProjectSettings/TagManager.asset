@@ -4,7 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - DB
+  - Music
+  - MusicSheet
   layers:
   - Default
   - TransparentFX

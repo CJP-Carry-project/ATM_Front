@@ -1,13 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-public class SendURLInfo : MonoBehaviour
+public class SendURLInfo : MonoBehaviour, HttpRequest
 {
     [SerializeField] private TMP_InputField info;
-    private string url = "http://localhost:80/";
     private bool isPost = false;
 
     public void sendInfoForMusic() //서버에게 URL 정보 보내기 [음원 악보 채보 버튼 이벤트]
@@ -15,7 +13,7 @@ public class SendURLInfo : MonoBehaviour
         if (!isPost)
         {
             Debug.Log(info.text);
-            StartCoroutine(PostReq(info.text, 0));
+            StartCoroutine(PostReq("http://localhost:80/music",info.text));
         }
         else
         {
@@ -28,7 +26,7 @@ public class SendURLInfo : MonoBehaviour
         if (!isPost)
         {
             Debug.Log(info.text);
-            StartCoroutine(PostReq(info.text, 1));
+            StartCoroutine(PostReq("http://localhost:80/piano",info.text));
         }
         else
         {
@@ -36,21 +34,13 @@ public class SendURLInfo : MonoBehaviour
         }
     }
 
-    IEnumerator PostReq(string postData, int type)
+    public IEnumerator PostReq(string url, string data)
     {
         isPost = true;
-        if (type == 0)
-        {
-            url += "music"; // 일반 음원 악보 채보 데이터 보냄
-        }
-
-        if (type == 1)
-        {
-            url += "piano"; // 피아노 음원 악보 채보 데이터 보냄
-        }
+        
         Debug.Log(url);
         //Json 데이터 준비
-        string json = "{\"link\":\"" + postData + "\"}";
+        string json = "{\"link\":\"" + data + "\"}";
         
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
         {
@@ -69,10 +59,18 @@ public class SendURLInfo : MonoBehaviour
             }
             else
             {
-                Debug.Log("Form upload complete!");
+                Debug.Log("데이터 전달 완료");
+
+                if (webRequest.responseCode == 200)
+                {
+                    Debug.Log("악보 정상적으로 수신");
+                }
+                else
+                {
+                    Debug.Log(webRequest.error);
+                }
             }
         }
-        url = "http://localhost:80/";
         isPost = false;
     }
 }

@@ -14,7 +14,7 @@ public class CamRotate : MonoBehaviour
     {
         
     }
-    void Update()
+    void FixedUpdate()
     {
         
         float mouse_X = Input.GetAxis("Mouse X"); // 마우스 x 축에 관한 입력 
