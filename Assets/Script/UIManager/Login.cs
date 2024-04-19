@@ -12,10 +12,7 @@ public class Login : MonoBehaviour, HttpRequest
         if (!isLogin) //로그인이 되어있지않다면
         {
             Debug.Log("Button Click");
-            // StartCoroutine(PostReq("http://localhost:80/kakaoLogin", "로그인 시도"));
-            //성공했다고 가정
-            Debug.Log("성공했다고 가정했음 코드에서 주석 확인 바람");
-            SceneManager.LoadScene("MusicRoom");
+            StartCoroutine(PostReq("http://localhost:80/authorize", "로그인 시도"));
         }
         else
         {
@@ -50,9 +47,10 @@ public class Login : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
-                    isLogin = true;
-                    Debug.Log("정상적으로 로그인 완료");
-                    SceneManager.LoadScene("MusicRoom");
+                    //URL 열기 -> 사용자가 카카오 인증하도록
+                    string result = webRequest.downloadHandler.text;
+                    Debug.Log(result);
+                    // SceneManager.LoadScene("MusicRoom");
                 }
                 else
                 {
