@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -7,13 +8,22 @@ using Newtonsoft.Json.Linq;
 public class Login : MonoBehaviour, HttpRequest
 {
     private bool isLogin = false;
+    private bool isClick = false;
     
     public void TryLogin() //서버에게 로그인 요청하기
     {
         if (!isLogin) //로그인이 되어있지않다면
         {
-            Debug.Log("Button Click");
-            StartCoroutine(PostReq("http://202.31.202.9:80/authorize", "로그인 시도"));
+            if (!isClick)
+            {
+                isClick = true;
+                Debug.Log("Button Click");
+                StartCoroutine(PostReq("http://202.31.202.9:80/authorize", "login"));
+            }
+            else
+            {
+                Debug.Log("현재 실행 중입니다.");
+            }
         }
         else
         {
@@ -48,19 +58,20 @@ public class Login : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
-                    Debug.Log("정보 수신 완료");
                     //URL 열기 -> 사용자가 카카오 인증하도록
                     // JSON 데이터 파싱
-                    JObject jsonObject = JObject.Parse(json);
-                    string openUrl = (string)jsonObject[webRequest.downloadHandler.text];
+                    JObject url_json = JObject.Parse(webRequest.downloadHandler.text);
+                    string openUrl = (string)url_json["open_url"];
                     Debug.Log(openUrl);
                     Application.OpenURL(openUrl);
                     
-                    //인증될 때까지 대기
-                    if (isLogin == true)
-                    {
-                        SceneManager.LoadScene("MusicRoom");
-                    }
+                    
+                    
+                }
+
+                if (webRequest.responseCode == 200)
+                {
+                    SceneManager.LoadScene("MusicRoom");
                 }
                 else
                 {
