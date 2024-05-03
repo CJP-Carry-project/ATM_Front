@@ -46,6 +46,12 @@ public class Setting : MonoBehaviour, HttpRequest
                }
            }
        }
-                        
+    }
+
+    public void ReturnToPage()
+    {
+        PlayerMove playerMove = GameObject.Find("Player").GetComponent<PlayerMove>();
+        this.GameObject().SetActive(false);
+        playerMove.moveSpeed = 10f;
     }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Music
   - MusicSheet
+  - Setting
   layers:
   - Default
   - TransparentFX

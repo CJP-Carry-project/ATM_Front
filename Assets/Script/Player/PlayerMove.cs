@@ -11,9 +11,13 @@ public class PlayerMove : MonoBehaviour
 
     private float gravity = -20f;
     private float yVelocity = 0f;
+
+    private GameObject settingUI;
+    private bool isSetting = false;
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        settingUI = GameObject.Find("Setting");
     }
 
     void FixedUpdate()
@@ -33,5 +37,13 @@ public class PlayerMove : MonoBehaviour
         dir.y = yVelocity;
 
         cc.Move(dir * moveSpeed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Debug.Log(settingUI);
+            isSetting = true;
+            settingUI.SetActive(true);
+            moveSpeed = 0f; //움직임을 없앰
+        }
     }
 }
