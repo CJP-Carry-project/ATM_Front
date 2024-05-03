@@ -64,9 +64,6 @@ public class Login : MonoBehaviour, HttpRequest
                     string openUrl = (string)url_json["open_url"];
                     Debug.Log(openUrl);
                     Application.OpenURL(openUrl);
-                    
-                    
-                    
                 }
 
                 if (webRequest.responseCode == 200)
