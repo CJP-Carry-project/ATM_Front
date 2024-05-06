@@ -73,7 +73,7 @@ public class CamHover : MonoBehaviour, HttpRequest
 
             if (type == 3) //midi
             {
-                StartCoroutine(PostReq("http://202.31.202.9:80/midi", "midi plz"));
+                StartCoroutine(PostReq("http://202.31.202.9:80/midi_recent", "midi plz"));
             }
         }
     }
@@ -106,7 +106,8 @@ public class CamHover : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
-                   
+                   JObject res = JObject.Parse(webRequest.downloadHandler.text);
+                   Debug.Log(res.ToString());
                 }
                 else
                 {
