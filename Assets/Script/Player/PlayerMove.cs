@@ -20,7 +20,7 @@ public class PlayerMove : MonoBehaviour
         settingUI = GameObject.Find("Setting");
     }
 
-    void FixedUpdate()
+    void Update()
     {
         float h = Input.GetAxis("Horizontal"); // 좌 우
         float v = Input.GetAxis("Vertical"); // 앞 뒤

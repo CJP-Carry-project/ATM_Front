@@ -3,7 +3,7 @@ using System.IO;
 using System;
 using NAudio.Wave;
 
-public class NAudioPlayer: MonoBehaviour
+public class NAudioPlayer : MonoBehaviour
 {
     public AudioClip FromMp3Data(byte[] data)
     {
@@ -36,6 +36,7 @@ public class NAudioPlayer: MonoBehaviour
         return outputStream;
     }
 }
+
 public class WAV
 {
     // convert two bytes to one float in the range -1 to 1

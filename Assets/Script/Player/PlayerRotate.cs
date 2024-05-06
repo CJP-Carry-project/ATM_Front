@@ -10,7 +10,7 @@ public class PlayerRotate : MonoBehaviour
     //회전값 변수 -> 회전 값 누적을 위함.
     private float mx = 0;
     
-    void FixedUpdate()
+    void Update()
     {
         // 플레이어의 경우 좌우 회전만 하면 된다. [범위는 따로 정할 필요 없음]
         float mouse_X = Input.GetAxis("Mouse X"); // 마우스 x 축에 관한 입력 
