@@ -1,13 +1,18 @@
+using System.Collections;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
-public class CamHover : MonoBehaviour
+public class CamHover : MonoBehaviour, HttpRequest
 {
     public Camera main;
     private bool isActive = false;
     private float activeDistance = 10f;
     public GameObject interactiveUI;
 
+    private AudioClip _audioClip;
+    private AudioSource audioSource;
     void Start()
     {
         main = GetComponent<Camera>();
@@ -35,6 +40,10 @@ public class CamHover : MonoBehaviour
             {
                 isActive = (distance <= activeDistance);
                 type = 2;
+            }else if (target.CompareTag("PlayMidi"))
+            {
+                isActive = (distance <= activeDistance);
+                type = 3;
             }
             else
             {
@@ -60,6 +69,49 @@ public class CamHover : MonoBehaviour
             if (type == 2) //악보 결과로
             {
                 SceneManager.LoadScene("MusicSheetUI");
+            }
+
+            if (type == 3) //midi
+            {
+                StartCoroutine(PostReq("http://202.31.202.9:80/midi", "midi plz"));
+            }
+        }
+    }
+
+    public IEnumerator PostReq(string url, string data)
+    {
+        // JSON 데이터 준비
+        JObject req = new JObject();
+        req["message"] = data;
+        string json = req.ToString();
+        Debug.Log(json);
+        using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+            
+            //요청 보내기
+            yield return webRequest.SendWebRequest();
+            
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(webRequest.error);
+            }
+            else
+            {
+                Debug.Log("정상적으로 정보 보냄");
+
+                if (webRequest.responseCode == 200)
+                {
+                   
+                }
+                else
+                {
+                    Debug.Log("수신 실패");
+                }
             }
         }
     }

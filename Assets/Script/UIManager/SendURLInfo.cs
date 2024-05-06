@@ -1,19 +1,39 @@
+using System;
 using System.Collections;
+using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+
 public class SendURLInfo : MonoBehaviour, HttpRequest
 {
     [SerializeField] private TMP_InputField info;
+    [SerializeField] private TMP_Text youtube_info;
+    [SerializeField] private Image thumnail_img;
+    [SerializeField] private TMP_InputField title_info;
+    
+    private string save_title = "";
+    private GameObject child;
+    private JObject res;
     private bool isPost = false;
 
-    public void sendInfoForMusic() //서버에게 URL 정보 보내기 [음원 악보 채보 버튼 이벤트]
+    private void Awake()
+    {
+        child = transform.Find("YoutubeInfoLayer").gameObject;
+    }
+
+    public void SendURL()
+    {
+        StartCoroutine(PostURLInfoReq("http://202.31.202.9:80/music", info.text));
+    }
+
+    public void SendInfoForMusic() //서버에게 URL 정보 보내기 [음원 악보 채보 버튼 이벤트]
     {
         if (!isPost)
         {
-            Debug.Log(info.text);
-            StartCoroutine(PostReq("http://localhost:80/music",info.text));
+            Debug.Log(save_title);
+            StartCoroutine(PostReq("http://202.31.202.9:80/save", save_title));
         }
         else
         {
@@ -21,28 +41,69 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
         }
     }
 
-    public void sendInfoForPiano() //서버에게 URL 정보 보내기 [피아노 악보 채보 버튼 이벤트]
+    public void SendInfoForPiano() //서버에게 URL 정보 보내기 [피아노 악보 채보 버튼 이벤트]
     {
         if (!isPost)
         {
-            Debug.Log(info.text);
-            StartCoroutine(PostReq("http://localhost:80/piano",info.text));
+            Debug.Log(save_title);
+            StartCoroutine(PostReq("http://202.31.202.9:80/piano", save_title));
         }
         else
         {
             Debug.Log("사전 Post 작업 진행 중");
         }
     }
-
+    //음악 정보 보내기
     public IEnumerator PostReq(string url, string data)
     {
         isPost = true;
-        
-        Debug.Log(url);
-        //Json 데이터 준비
-        string json = "{\"link\":\"" + data + "\"}";
-        
+        // JSON 데이터 준비
+        res["title_info"] = data;
+        res["response"] = "yes";
+        string json = res.ToString();
+        Debug.Log(json);
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+            
+            //요청 보내기
+            yield return webRequest.SendWebRequest();
+            
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(webRequest.error);
+            }
+            else
+            {
+                Debug.Log("정상적으로 정보 보냄");
+
+                if (webRequest.responseCode == 200)
+                {
+                    Debug.Log("여기까지 정상 성공");
+                    JObject rec = JObject.Parse(webRequest.downloadHandler.text);
+                    string result = (string)rec["message"];
+                    Debug.Log(result);
+                }
+                else
+                {
+                    Debug.Log("수신 실패");
+                }
+            }
+
+            isPost = false;
+        }
+    }
+    //URL 정보 보내기
+    public IEnumerator PostURLInfoReq(string url, string data)
+    {
+        //Json 데이터 준비
+        string json = "{\"youtube_url\":\"" + data + "\"}";
+        Debug.Log(json);
+        using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST")) 
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -52,7 +113,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
             //요청 보내기
             yield return webRequest.SendWebRequest();
 
-            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
                 webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError(webRequest.error);
@@ -63,7 +124,15 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
-                    Debug.Log("악보 정상적으로 수신");
+                    Debug.Log("요청 받았음");
+                    res = JObject.Parse(webRequest.downloadHandler.text);
+                    string author = (string)res["author"];
+                    string img = (string)res["thumbnail"];
+                    string title = (string)res["title"];
+                    youtube_info.text = "작가: "+author + "\n"+"\n" + "제목: "+ title;
+                    ChangeImg(img);
+                    child.SetActive(true);
+                    Debug.Log("정상 response 수신 완료");
                 }
                 else
                 {
@@ -71,6 +140,33 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
                 }
             }
         }
-        isPost = false;
+    }
+    //이미지 변환
+    public void ChangeImg(string img_url)
+    {
+        StartCoroutine(GetTexture(img_url));
+    }
+    //코루틴을 사용해서 WWW객체를 통해 URL에 접근 -> 이미지 불러옴 + 텍스처 변환 및 Sprite 변환 + 매칭
+    public IEnumerator GetTexture(string url)
+    {
+        // UnityWebRequest를 사용하여 이미지 가져오기
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url)) {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success) {
+                // 가져온 이미지를 텍스처로 변환하여 렌더러에 적용
+                Texture2D texture = DownloadHandlerTexture.GetContent(www);
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+                thumnail_img.sprite = sprite;
+            } else {
+                Debug.LogError("Failed to load image: " + www.error);
+            }
+        }
+    }
+    //확인 버튼 이벤트
+    public void OnCheck()
+    {
+        save_title = title_info.text;
+        child.SetActive(false);
     }
 }
