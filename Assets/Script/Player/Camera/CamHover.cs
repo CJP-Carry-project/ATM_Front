@@ -112,11 +112,8 @@ public class CamHover : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
-                    string byteCode = (string)res["midi_wav"];
+                    string byteCode = (string)res["midi"];
                     Debug.Log(byteCode);
-                    audioClip = LoadWavFromBase64String(byteCode);
-                    audioSource.clip = audioClip;
-                    audioSource.Play();
                 }
                 else
                 {
@@ -124,42 +121,5 @@ public class CamHover : MonoBehaviour, HttpRequest
                 }
             }
         }
-    }
-    
-    public static AudioClip LoadWavFromBase64String(string base64WavData)
-    {
-        // Base64 디코딩을 사용하여 문자열을 바이트 배열로 변환
-        byte[] wavBytes = Convert.FromBase64String(base64WavData);
-
-        // 헤더 정보 파싱
-        int sampleRate = BitConverter.ToInt32(wavBytes, 24);
-        int numChannels = BitConverter.ToInt16(wavBytes, 22);
-        int headerSize = 44;
-
-        // 데이터 부분만 추출
-        byte[] audioData = new byte[wavBytes.Length - headerSize];
-        Array.Copy(wavBytes, headerSize, audioData, 0, audioData.Length);
-
-        // AudioClip 생성
-        AudioClip audioClip = AudioClip.Create("AudioClip", audioData.Length / 2, numChannels, sampleRate, false);
-
-        // 데이터 삽입
-        audioClip.SetData(Convert16BitByteArrayToFloatArray(audioData), 0);
-
-        return audioClip;
-    }
-
-    // 16비트 바이트 배열을 float 배열로 변환하는 메서드
-    private static float[] Convert16BitByteArrayToFloatArray(byte[] source)
-    {
-        float[] converted = new float[source.Length / 2];
-        for (int i = 0; i < converted.Length; i++)
-        {
-            // 16비트 바이트 배열에서 short으로 변환 후 -1.0f ~ 1.0f 사이의 범위로 정규화
-            short value = (short)((source[i * 2 + 1] << 8) | source[i * 2]);
-            converted[i] = value / 32768.0f;
-        }
-
-        return converted;
     }
 }
