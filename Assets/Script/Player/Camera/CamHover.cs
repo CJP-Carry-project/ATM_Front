@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.IO;
+using NAudio.Midi;
+using NAudio.Wave;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,15 +14,13 @@ public class CamHover : MonoBehaviour, HttpRequest
     private bool isActive = false;
     private float activeDistance = 10f;
     public GameObject interactiveUI;
-
-    private AudioClip audioClip; // 받은 WAV 오디오 데이터를 저장할 AudioClip
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
 
     void Start()
     {
         main = GetComponent<Camera>();
         interactiveUI.SetActive(isActive);
-        audioSource = transform.GetComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -112,8 +113,13 @@ public class CamHover : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
-                    string byteCode = (string)res["midi"];
-                    Debug.Log(byteCode);
+                    string mp3 = (string)res["mp3"];
+                    Debug.Log(mp3);
+                    // Convert Base64 string to byte array
+                    byte[] mp3Bytes = System.Text.Encoding.UTF8.GetBytes(mp3);
+                    Debug.Log(mp3Bytes);
+                    _audioSource.clip = transform.GetComponent<NAudioPlayer>().FromMp3Data(mp3Bytes);
+                    _audioSource.Play();
                 }
                 else
                 {
