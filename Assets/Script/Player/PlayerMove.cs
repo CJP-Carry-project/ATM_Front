@@ -37,7 +37,6 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Escape))
         {
-            Debug.Log(settingUI);
             settingUI.SetActive(true);
             moveSpeed = 0f; //움직임을 없앰
         }
