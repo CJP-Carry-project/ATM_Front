@@ -12,6 +12,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     [SerializeField] private TMP_Text youtube_info;
     [SerializeField] private Image thumnail_img;
     [SerializeField] private TMP_InputField title_info;
+    [SerializeField] private GameObject successAudio;
     
     private string save_title = "";
     private GameObject child;
@@ -87,6 +88,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
                     JObject rec = JObject.Parse(webRequest.downloadHandler.text);
                     string result = (string)rec["message"];
                     Debug.Log(result);
+                    successAudio.GetComponent<AudioSource>().Play();
                 }
                 else
                 {

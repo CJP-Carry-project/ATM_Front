@@ -9,7 +9,12 @@ public class Login : MonoBehaviour, HttpRequest
 {
     private bool isLogin = false;
     private bool isClick = false;
-    
+
+    public void ExitProgram()
+    {
+        Debug.Log("프로그램을 종료합니다.");
+        Application.Quit();
+    }
     public void TryLogin() //서버에게 로그인 요청하기
     {
         if (!isLogin) //로그인이 되어있지않다면

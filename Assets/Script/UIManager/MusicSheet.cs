@@ -13,6 +13,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
     [SerializeField] private Image leftSheet; //왼쪽
     [SerializeField] private Image rightSheet; //오른쪽
     [SerializeField] private Texture2D endImg;
+    [SerializeField] private GameObject successAudio;
     private List<Sprite> sheetList = new List<Sprite>();
     private int leftIndex = 0;
     private int rightIndex = 1;
@@ -59,14 +60,11 @@ public class MusicSheet : MonoBehaviour, HttpRequest
                             JObject imgData = JObject.Parse(token);
                             JObject sheetImg = (JObject)imgData["sheet_img"];
                             byte[] binaryData = (byte[])sheetImg["$binary"];
-
-                            Debug.Log("Convert Bytes: " + binaryData);
-                            File.WriteAllBytes("C:\\test\\test.img", binaryData);
                             sheetList.Add(LoadImageFromBytes(binaryData));
                         }
                     }
-
                     ShowSheet(leftIndex, rightIndex);
+                    successAudio.GetComponent<AudioSource>().Play();
                 }
                 else
                 {

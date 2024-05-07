@@ -12,7 +12,6 @@ public class PlayerMove : MonoBehaviour
     private float yVelocity = 0f;
     
     [SerializeField] private GameObject settingUI;
-    private bool isSetting = false;
     void Start()
     {
         cc = GetComponent<CharacterController>();
@@ -39,7 +38,6 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKey(KeyCode.Escape))
         {
             Debug.Log(settingUI);
-            isSetting = true;
             settingUI.SetActive(true);
             moveSpeed = 0f; //움직임을 없앰
         }
