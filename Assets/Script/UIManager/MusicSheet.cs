@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using UnityEngine.UI;
 using UnityEngine;
@@ -10,7 +12,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
 {
     [SerializeField] private Image leftSheet; //왼쪽
     [SerializeField] private Image rightSheet; //오른쪽
-    private List<Texture2D> sheetList;
+    private List<Sprite> sheetList = new List<Sprite>();
     private int page_info = 1;
 
     void Start()
@@ -29,7 +31,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
-
+            Debug.Log("요청");
             //요청 보내기
             yield return webRequest.SendWebRequest();
 
@@ -46,9 +48,23 @@ public class MusicSheet : MonoBehaviour, HttpRequest
                 {
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
                     Debug.Log(res.ToString());
-                    //TODO 악보의 개수와 악보 리스트를 받아야함.
-                    //TODO 악보의 개수만큼 반복해서 UTF 인코딩을 실행해서 바이트로 나눈다 -> 바이트 배열로 나온 것들을 전부 텍스처로 변환하여 리스트에 하나씩 넣어준다.
-                    //TODO 넣어준 리스트의 0~n번째까지 있을텐데 page처리하도록 한다.
+                    JArray sheets = (JArray)res["sheets"];
+                    if (sheets != null)
+                    {
+                        foreach (var jToken in sheets)
+                        {
+                            string token = jToken.Value<string>();
+                            JObject imgData = JObject.Parse(token);
+                            JObject sheetImg = (JObject)imgData["sheet_img"];
+                            byte[] binaryData = (byte[])sheetImg["$binary"];
+                            
+                            Debug.Log("Convert Bytes: " + binaryData);
+                            File.WriteAllBytes("C:\\test\\test.img",binaryData);
+                            sheetList.Add(LoadImageFromBytes(binaryData));
+                        }
+                    }
+                    leftSheet.sprite = sheetList[0];
+                    rightSheet.sprite = sheetList[1];
                 }
                 else
                 {
@@ -58,8 +74,9 @@ public class MusicSheet : MonoBehaviour, HttpRequest
         }
     }
 
-    public Texture2D LoadImageFromBytes(byte[] imageData)
+    public Sprite LoadImageFromBytes(byte[] imageData)
     {
+        Debug.Log("Load Image ..");
         // 이미지 데이터가 null이거나 비어있으면 null 반환
         if (imageData == null || imageData.Length == 0)
         {
@@ -72,7 +89,8 @@ public class MusicSheet : MonoBehaviour, HttpRequest
             // 이미지 데이터를 Texture2D로 변환
             Texture2D texture = new Texture2D(600, 1000);
             texture.LoadImage(imageData); // 바이트 배열을 이미지로 로드
-            return texture;
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+            return sprite;
         }
         catch (Exception ex)
         {
@@ -84,18 +102,11 @@ public class MusicSheet : MonoBehaviour, HttpRequest
     public void NextToPage()
     {
         page_info += 1;
-        if (sheetList.Count < page_info)//최대 리스트 개수
-        {
-            page_info = sheetList.Count;
-        }
+        
     }
 
     public void PrevToPage()
     {
         page_info -= 1;
-        if (page_info < 0) //최소 1페이지
-        {
-            page_info = 1;
-        }
     }
 }
