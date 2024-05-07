@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using FluidMidi;
 using NAudio.Midi;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -109,12 +110,15 @@ public class CamHover : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
+                    string link = Application.streamingAssetsPath + "/music.midi";
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
                     Debug.Log(res);
                     byte[] midi = (byte[])res["midi"];
-                    Debug.Log(Application.streamingAssetsPath+"/music.midi");
-                    File.WriteAllBytes(Application.streamingAssetsPath+"/music.midi", midi);
-                    // MidiFile midiFile = new MidiFile(Application.streamingAssetsPath+"music.midi");
+                    Debug.Log(link);
+                    File.WriteAllBytes(link, midi);
+                    midiPlayer.GetComponent<SongPlayer>().SetSong(link);
+                    midiPlayer.SetActive(true);
+                    midiPlayer.GetComponent<SongPlayer>().Play();
                 }
                 else
                 {

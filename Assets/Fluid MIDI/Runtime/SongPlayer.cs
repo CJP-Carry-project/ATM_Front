@@ -62,7 +62,6 @@ namespace FluidMidi
 
         [SerializeField]
         Synthesizer synthesizer;
-        [SerializeField]
         StreamingAsset song = new StreamingAsset();
         [SerializeField]
         [Tooltip("Start playing after the song is loaded for the first time.")]
@@ -336,6 +335,13 @@ namespace FluidMidi
             Api.Player.Stop(playerPtr);
             prepareJob = new PrepareJob(playerPtr).Schedule();
             unloadDelay = -1;
+        }
+
+        public void SetSong(string path)
+        {
+            StreamingAsset asset = new StreamingAsset();
+            asset.SetFullPath(path);
+            song = asset;
         }
 
         void Start()
