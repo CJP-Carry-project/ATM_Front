@@ -12,8 +12,10 @@ public class MusicSheet : MonoBehaviour, HttpRequest
 {
     [SerializeField] private Image leftSheet; //왼쪽
     [SerializeField] private Image rightSheet; //오른쪽
+    [SerializeField] private Texture2D endImg;
     private List<Sprite> sheetList = new List<Sprite>();
-    private int page_info = 1;
+    private int leftIndex = 0;
+    private int rightIndex = 1;
 
     void Start()
     {
@@ -57,14 +59,14 @@ public class MusicSheet : MonoBehaviour, HttpRequest
                             JObject imgData = JObject.Parse(token);
                             JObject sheetImg = (JObject)imgData["sheet_img"];
                             byte[] binaryData = (byte[])sheetImg["$binary"];
-                            
+
                             Debug.Log("Convert Bytes: " + binaryData);
-                            File.WriteAllBytes("C:\\test\\test.img",binaryData);
+                            File.WriteAllBytes("C:\\test\\test.img", binaryData);
                             sheetList.Add(LoadImageFromBytes(binaryData));
                         }
                     }
-                    leftSheet.sprite = sheetList[0];
-                    rightSheet.sprite = sheetList[1];
+
+                    ShowSheet(leftIndex, rightIndex);
                 }
                 else
                 {
@@ -99,14 +101,55 @@ public class MusicSheet : MonoBehaviour, HttpRequest
         }
     }
 
+    // 페이지 1일 때 0,1
+    // 페이지 2일 때 2,3
+    // 페이지 3일 때 4,5
     public void NextToPage()
     {
-        page_info += 1;
-        
+        int length = sheetList.Count;
+        Debug.Log("리스트 사이즈: " + length);
+        leftIndex += 2;
+        rightIndex += 2;
+        Debug.Log("현재 인덱스 왼: " + leftIndex + "오: " + rightIndex);
+        if (length % 2 == 0 && leftIndex > length - 1) //짝수이면서 왼쪽이 OutOfBoundary인 경우
+        {
+            leftIndex = length - 2;
+            rightIndex = length - 1;
+        }
+
+        if (length % 2 != 0 && rightIndex > length - 1) //홀수이면서 오른쪽이 OutOfBoundary인 경우
+        {
+            leftIndex = length - 1;
+            rightIndex = -1;
+        }
+
+        ShowSheet(leftIndex, rightIndex);
     }
 
     public void PrevToPage()
     {
-        page_info -= 1;
+        leftIndex -= 2;
+        rightIndex -= 2;
+        Debug.Log("현재 인덱스 왼: " + leftIndex + "오: " + rightIndex);
+        if (leftIndex < 0)
+        {
+            leftIndex = 0;
+            rightIndex = 1;
+        }
+
+        ShowSheet(leftIndex, rightIndex);
+    }
+
+    public void ShowSheet(int left, int right)
+    {
+        leftSheet.sprite = sheetList[left];
+        if (right == -1)
+        {
+            rightSheet.sprite = Sprite.Create(endImg, new Rect(0, 0, endImg.width, endImg.height), Vector2.one * 0.5f);
+        }
+        else
+        {
+            rightSheet.sprite = sheetList[right];
+        }
     }
 }
