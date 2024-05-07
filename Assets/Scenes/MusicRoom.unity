@@ -976,7 +976,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   main: {fileID: 1204096811}
   interactiveUI: {fileID: 2128105396}
-  midiPlayer: {fileID: 0}
 --- !u!114 &1204096816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1484,6 +1483,10 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 1496900144553125979, guid: 307cce200aae6104baa9647f6b7fe815, type: 3}
+      propertyPath: settingUI
+      value: 
+      objectReference: {fileID: 2075407107}
     - target: {fileID: 2442834783444683919, guid: 307cce200aae6104baa9647f6b7fe815, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

@@ -6,18 +6,16 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     public float moveSpeed = 20f;
-
     private CharacterController cc;
 
     private float gravity = -20f;
     private float yVelocity = 0f;
-
-    private GameObject settingUI;
+    
+    [SerializeField] private GameObject settingUI;
     private bool isSetting = false;
     void Start()
     {
         cc = GetComponent<CharacterController>();
-        settingUI = GameObject.Find("Setting");
     }
 
     void Update()

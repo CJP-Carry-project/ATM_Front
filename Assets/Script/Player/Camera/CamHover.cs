@@ -113,13 +113,8 @@ public class CamHover : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
-                    string mp3 = (string)res["mp3"];
-                    Debug.Log(mp3);
-                    // Convert Base64 string to byte array
-                    byte[] mp3Bytes = System.Text.Encoding.UTF8.GetBytes(mp3);
-                    Debug.Log(mp3Bytes);
-                    _audioSource.clip = transform.GetComponent<NAudioPlayer>().FromMp3Data(mp3Bytes);
-                    _audioSource.Play();
+                    byte[] midi = (byte[])res["midi"];
+                    
                 }
                 else
                 {
