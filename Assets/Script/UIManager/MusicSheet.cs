@@ -107,10 +107,8 @@ public class MusicSheet : MonoBehaviour, HttpRequest
     public void NextToPage()
     {
         int length = sheetList.Count;
-        Debug.Log("리스트 사이즈: " + length);
         leftIndex += 2;
         rightIndex += 2;
-        Debug.Log("현재 인덱스 왼: " + leftIndex + "오: " + rightIndex);
         if (length % 2 == 0 && leftIndex > length - 1) //짝수이면서 왼쪽이 OutOfBoundary인 경우
         {
             leftIndex = length - 2;
@@ -128,9 +126,12 @@ public class MusicSheet : MonoBehaviour, HttpRequest
 
     public void PrevToPage()
     {
+        if (rightIndex == -1) //End를 찍은 경우
+        {
+            rightIndex = sheetList.Count;
+        }
         leftIndex -= 2;
         rightIndex -= 2;
-        Debug.Log("현재 인덱스 왼: " + leftIndex + "오: " + rightIndex);
         if (leftIndex < 0)
         {
             leftIndex = 0;
