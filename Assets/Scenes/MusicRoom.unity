@@ -974,6 +974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4904d91f229da5440b298b0a6c41a999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  midiPlayer: {fileID: 0}
   main: {fileID: 1204096811}
   interactiveUI: {fileID: 2128105396}
 --- !u!114 &1204096816

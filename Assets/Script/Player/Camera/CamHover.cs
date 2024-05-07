@@ -10,17 +10,15 @@ using UnityEngine.Networking;
 
 public class CamHover : MonoBehaviour, HttpRequest
 {
+    [SerializeField] private GameObject midiPlayer;
     public Camera main;
     private bool isActive = false;
     private float activeDistance = 10f;
     public GameObject interactiveUI;
-    private AudioSource _audioSource;
-
     void Start()
     {
         main = GetComponent<Camera>();
         interactiveUI.SetActive(isActive);
-        _audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -113,8 +111,9 @@ public class CamHover : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
+                    Debug.Log(res.ToString());
                     byte[] midi = (byte[])res["midi"];
-                    
+                    File.WriteAllBytes("C:\\test\\test.midi", midi);
                 }
                 else
                 {
