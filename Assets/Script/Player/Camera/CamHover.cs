@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.IO;
 using NAudio.Midi;
-using NAudio.Wave;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,11 +8,12 @@ using UnityEngine.Networking;
 
 public class CamHover : MonoBehaviour, HttpRequest
 {
-    [SerializeField] private GameObject midiPlayer;
     public Camera main;
     private bool isActive = false;
     private float activeDistance = 10f;
     public GameObject interactiveUI;
+    [SerializeField] private GameObject midiPlayer;
+
     void Start()
     {
         main = GetComponent<Camera>();
@@ -111,9 +110,11 @@ public class CamHover : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
-                    Debug.Log(res.ToString());
+                    Debug.Log(res);
                     byte[] midi = (byte[])res["midi"];
-                    File.WriteAllBytes("C:\\test\\test.midi", midi);
+                    Debug.Log(Application.streamingAssetsPath+"/music.midi");
+                    File.WriteAllBytes(Application.streamingAssetsPath+"/music.midi", midi);
+                    // MidiFile midiFile = new MidiFile(Application.streamingAssetsPath+"music.midi");
                 }
                 else
                 {
