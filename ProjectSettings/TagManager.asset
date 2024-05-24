@@ -8,6 +8,7 @@ TagManager:
   - MusicSheet
   - Setting
   - PlayMidi
+  - Record
   layers:
   - Default
   - TransparentFX

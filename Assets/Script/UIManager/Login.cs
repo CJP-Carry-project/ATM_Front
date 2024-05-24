@@ -22,9 +22,7 @@ public class Login : MonoBehaviour, HttpRequest
             if (!isClick)
             {
                 isClick = true;
-                // StartCoroutine(PostReq("http://202.31.202.9:80/authorize", "login"));
-                Debug.Log("로그인 되었다고 가정");
-                SceneManager.LoadScene("MusicRoom");
+                StartCoroutine(PostReq("http://202.31.202.9:80/authorize", "login"));
             }
             else
             {
