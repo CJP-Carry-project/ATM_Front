@@ -48,6 +48,10 @@ public class CamHover : MonoBehaviour, HttpRequest
             {
                 isActive = (distance <= activeDistance);
                 type = 3;
+            }else if (target.CompareTag("Screen"))
+            {
+                isActive = (distance <= activeDistance);
+                type = 4;
             }
             else
             {
@@ -77,7 +81,12 @@ public class CamHover : MonoBehaviour, HttpRequest
 
             if (type == 3) //midi
             {
-                StartCoroutine(PostReq("https://202.31.202.9:80/midi_recent", "midi plz"));
+                StartCoroutine(PostReq("http://202.31.202.9:80/midi_recent", "midi plz"));
+            }
+
+            if (type == 4)
+            {
+                
             }
         }
     }
@@ -88,7 +97,9 @@ public class CamHover : MonoBehaviour, HttpRequest
         // JSON 데이터 준비
         JObject req = new JObject();
         req["message"] = data;
+        req["music_id"] = Record.recordList[Record.idx]["music_id"];
         string json = req.ToString();
+        Debug.Log(json);
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);

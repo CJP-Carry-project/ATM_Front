@@ -13,10 +13,9 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     [SerializeField] private Image thumnail_img;
     [SerializeField] private TMP_InputField title_info;
     [SerializeField] private GameObject successAudio;
-    
     private string save_title = "";
+    private string save_img = "";
     private GameObject child;
-    private JObject res;
     private bool isPost = false;
 
     private void Awake()
@@ -26,7 +25,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
 
     public void SendURL()
     {
-        StartCoroutine(PostURLInfoReq("https://202.31.202.9:80/music", info.text));
+        StartCoroutine(PostURLInfoReq("http://202.31.202.9:80/music", info.text));
     }
 
     public void SendInfoForMusic() //서버에게 URL 정보 보내기 [음원 악보 채보 버튼 이벤트]
@@ -34,7 +33,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
         if (!isPost)
         {
             Debug.Log(save_title);
-            StartCoroutine(PostReq("https://202.31.202.9:80/save", save_title));
+            StartCoroutine(PostReq("http://202.31.202.9:80/save", save_title));
         }
         else
         {
@@ -47,7 +46,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
         if (!isPost)
         {
             Debug.Log(save_title);
-            StartCoroutine(PostReq("https://202.31.202.9:80/piano", save_title));
+            StartCoroutine(PostReq("http://202.31.202.9:80/piano", save_title));
         }
         else
         {
@@ -58,10 +57,13 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     public IEnumerator PostReq(string url, string data)
     {
         isPost = true;
+        JObject req = new JObject();
         // JSON 데이터 준비
-        res["title_info"] = data;
-        res["response"] = "yes";
-        string json = res.ToString();
+        req["title_info"] = data;
+        req["thumbnail"] = save_img;
+        req["youtube_url"] = info.text;
+        req["response"] = "yes";
+        string json = req.ToString();
         Debug.Log(json);
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
         {
@@ -107,7 +109,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     {
         //Json 데이터 준비
         string json = "{\"youtube_url\":\"" + data + "\"}";
-        Debug.Log(json);
+        
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST")) 
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
@@ -115,6 +117,9 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
 
+            // 인증서 검증을 무시하기 위해 CertificateHandler 설정
+            webRequest.certificateHandler = new BypassCertificate();
+            
             //요청 보내기
             yield return webRequest.SendWebRequest();
 
@@ -130,7 +135,8 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     Debug.Log("요청 받았음");
-                    res = JObject.Parse(webRequest.downloadHandler.text);
+                    JObject res = JObject.Parse(webRequest.downloadHandler.text);
+                    Debug.Log(res.ToString());
                     string author = (string)res["author"];
                     string img = (string)res["thumbnail"];
                     string title = (string)res["title"];
@@ -149,6 +155,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     //이미지 변환
     public void ChangeImg(string img_url)
     {
+        save_img = img_url;
         StartCoroutine(GetTexture(img_url));
     }
     //코루틴을 사용해서 WWW객체를 통해 URL에 접근 -> 이미지 불러옴 + 텍스처 변환 및 Sprite 변환 + 매칭

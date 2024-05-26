@@ -20,14 +20,16 @@ public class MusicSheet : MonoBehaviour, HttpRequest
 
     void Start()
     {
-        StartCoroutine(PostReq("https://202.31.202.9:80/sheet_recent", "musicSheet"));
+        StartCoroutine(PostReq("http://202.31.202.9:80/sheet", "musicSheet"));
     }
 
     public IEnumerator PostReq(string url, string data)
     {
         JObject req = new JObject();
         req["message"] = data;
+        req["music_id"] = Record.recordList[Record.idx]["music_id"];
         string json = req.ToString();
+        Debug.Log(json);
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
@@ -53,6 +55,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
+                    Debug.Log(webRequest.downloadHandler.text);
                     JObject res = JObject.Parse(webRequest.downloadHandler.text);
                     Debug.Log(res.ToString());
                     JArray sheets = (JArray)res["sheets"];

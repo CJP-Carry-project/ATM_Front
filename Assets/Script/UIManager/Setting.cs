@@ -15,7 +15,7 @@ public class Setting : MonoBehaviour, HttpRequest
     }
     public void TrySignOut()
     {
-        StartCoroutine(PostReq("https://202.31.202.9:80/leave", "leave"));
+        StartCoroutine(PostReq("http://202.31.202.9:80/leave", "leave"));
     }
     
     public IEnumerator PostReq(string url, string data)
