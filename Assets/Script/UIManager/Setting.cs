@@ -4,11 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class Setting : MonoBehaviour, HttpRequest
 {
-    [SerializeField] private Slider _slider;
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject player;
     public void TryLogOut()
@@ -17,7 +15,7 @@ public class Setting : MonoBehaviour, HttpRequest
     }
     public void TrySignOut()
     {
-        StartCoroutine(PostReq("http://202.31.202.9:80/leave", "leave"));
+        StartCoroutine(PostReq("https://202.31.202.9:80/leave", "leave"));
     }
     
     public IEnumerator PostReq(string url, string data)
@@ -32,7 +30,10 @@ public class Setting : MonoBehaviour, HttpRequest
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
-           
+            
+            // 인증서 검증을 무시하기 위해 CertificateHandler 설정
+            webRequest.certificateHandler = new BypassCertificate();
+            
             yield return webRequest.SendWebRequest();
 
             if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
@@ -64,18 +65,5 @@ public class Setting : MonoBehaviour, HttpRequest
         PlayerMove playerMove = GameObject.Find("Player").GetComponent<PlayerMove>();
         this.GameObject().SetActive(false);
         playerMove.moveSpeed = 10f;
-    }
-
-    void OnEnable()
-    {
-        _slider.onValueChanged.AddListener(delegate { OnSliderValueChanged(); });
-    }
-    private void OnSliderValueChanged()
-    {
-        // Slider의 현재 값은 slider.value를 통해 얻을 수 있습니다.
-        float sliderValue = _slider.value;
-
-        _camera.GetComponent<CamRotate>().rotSpeed = sliderValue;
-        player.GetComponent<PlayerRotate>().rotSpeed = sliderValue;
     }
 }

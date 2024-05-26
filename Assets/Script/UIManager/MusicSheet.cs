@@ -20,7 +20,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
 
     void Start()
     {
-        StartCoroutine(PostReq("http://202.31.202.9:80/sheet_recent", "musicSheet"));
+        StartCoroutine(PostReq("https://202.31.202.9:80/sheet_recent", "musicSheet"));
     }
 
     public IEnumerator PostReq(string url, string data)
@@ -35,6 +35,10 @@ public class MusicSheet : MonoBehaviour, HttpRequest
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
             Debug.Log("요청");
+            
+            // 인증서 검증을 무시하기 위해 CertificateHandler 설정
+            webRequest.certificateHandler = new BypassCertificate();
+            
             //요청 보내기
             yield return webRequest.SendWebRequest();
 

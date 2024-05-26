@@ -1,5 +1,5 @@
+using System;
 using System.Collections;
-using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -22,7 +22,7 @@ public class Login : MonoBehaviour, HttpRequest
             if (!isClick)
             {
                 isClick = true;
-                StartCoroutine(PostReq("http://202.31.202.9:80/authorize", "login"));
+                StartCoroutine(PostReq("https://202.31.202.9:80/authorize", "login"));
             }
             else
             {
@@ -47,6 +47,9 @@ public class Login : MonoBehaviour, HttpRequest
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
+            
+            // 인증서 검증을 무시하기 위해 CertificateHandler 설정
+            webRequest.certificateHandler = new BypassCertificate();
             
             //요청 보내기
             yield return webRequest.SendWebRequest();
@@ -73,10 +76,6 @@ public class Login : MonoBehaviour, HttpRequest
                 if (webRequest.responseCode == 200)
                 {
                     SceneManager.LoadScene("MusicRoom");
-                }
-                else
-                {
-                    Debug.Log("비정상적으로 로그인을 실패했습니다.");
                 }
             }
         }

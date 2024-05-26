@@ -77,7 +77,7 @@ public class CamHover : MonoBehaviour, HttpRequest
 
             if (type == 3) //midi
             {
-                StartCoroutine(PostReq("http://202.31.202.9:80/midi_recent", "midi plz"));
+                StartCoroutine(PostReq("https://202.31.202.9:80/midi_recent", "midi plz"));
             }
         }
     }
@@ -95,7 +95,9 @@ public class CamHover : MonoBehaviour, HttpRequest
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
-
+            
+            // 인증서 검증을 무시하기 위해 CertificateHandler 설정
+            webRequest.certificateHandler = new BypassCertificate();
             //요청 보내기
             yield return webRequest.SendWebRequest();
 
