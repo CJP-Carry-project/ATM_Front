@@ -76,17 +76,12 @@ public class CamHover : MonoBehaviour, HttpRequest
 
             if (type == 2) //악보 결과로
             {
-                SceneManager.LoadScene("MusicSheetUI");
+                LoadSceneController.LoadScene("MusicSheetUI");
             }
 
             if (type == 3) //midi
             {
                 StartCoroutine(PostReq("http://202.31.202.9:80/midi_recent", "midi plz"));
-            }
-
-            if (type == 4)
-            {
-                
             }
         }
     }
@@ -97,6 +92,7 @@ public class CamHover : MonoBehaviour, HttpRequest
         // JSON 데이터 준비
         JObject req = new JObject();
         req["message"] = data;
+        req["id"] = MyIDInfo.myId;
         req["music_id"] = Record.recordList[Record.idx]["music_id"];
         string json = req.ToString();
         Debug.Log(json);

@@ -11,20 +11,26 @@ public class SceneController : MonoBehaviour
         SceneManager.LoadScene("MusicRoom");
     }
 
-    public void goToMusicSheet()
+    public void goInitUI()
     {
-        Debug.Log("악보 UI로 이동");
-        SceneManager.LoadScene("MusicSheetUI");
+        Debug.Log("처음 화면으로 돌아갑니다.");
+        SceneManager.LoadScene("init");
     }
 
-    public void goToSettingUI()
+    public void goToLogin()
     {
-        Debug.Log("설정 화면으로 이동");
+        Debug.Log("로그인으로 이동");
+        SceneManager.LoadScene("Login");
     }
 
-    public void goToInputYoutubeLink()
+    public void goToRegister()
     {
-        Debug.Log("음원 링크 입력 화면으로 이동");
-        SceneManager.LoadScene("InputYoutubeLink");
+        Debug.Log("회원가입으로 이동");
+        SceneManager.LoadScene("Register");
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 }

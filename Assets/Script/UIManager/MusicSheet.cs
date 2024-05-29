@@ -27,6 +27,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
     {
         JObject req = new JObject();
         req["message"] = data;
+        req["id"] = MyIDInfo.myId;
         req["music_id"] = Record.recordList[Record.idx]["music_id"];
         string json = req.ToString();
         Debug.Log(json);

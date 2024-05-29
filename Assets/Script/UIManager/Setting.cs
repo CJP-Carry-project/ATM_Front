@@ -11,7 +11,7 @@ public class Setting : MonoBehaviour, HttpRequest
     [SerializeField] private GameObject player;
     public void TryLogOut()
     {
-        SceneManager.LoadScene("Login");
+        SceneManager.LoadScene("init");
     }
     public void TrySignOut()
     {
@@ -20,9 +20,8 @@ public class Setting : MonoBehaviour, HttpRequest
     
     public IEnumerator PostReq(string url, string data)
     {
-        Debug.Log(data);
-        
-        string json = "{\"msg\":\"" + data + "\"}";
+           
+        string json = "{\"id\":\"" + MyIDInfo.myId + "\"}";
 
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "Post"))
         {
@@ -51,7 +50,7 @@ public class Setting : MonoBehaviour, HttpRequest
                     JObject rec = JObject.Parse(webRequest.downloadHandler.text);
                     string result = (string)rec["message"];
                     Debug.Log(result);
-                    SceneManager.LoadScene("Login");
+                    SceneManager.LoadScene("init");
                 }
                 else
                 {

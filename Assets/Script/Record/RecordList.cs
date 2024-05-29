@@ -13,7 +13,6 @@ public class RecordList : MonoBehaviour, HttpRequest
     private JArray lists = null;
     private int count = 0;
     public int idx = 0;
-    private float delay = 3f;
     private void Start()
     {
         StartCoroutine(PostReq("http://202.31.202.9/sheet_all", "MusicList"));
@@ -23,6 +22,7 @@ public class RecordList : MonoBehaviour, HttpRequest
     {
         JObject req = new JObject();
         req["message"] = data;
+        req["id"] = MyIDInfo.myId;
         string json = req.ToString();
 
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))

@@ -60,6 +60,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
         JObject req = new JObject();
         // JSON 데이터 준비
         req["title_info"] = data;
+        req["id"] = MyIDInfo.myId; //ID도 같이 보냄
         req["thumbnail"] = save_img;
         req["youtube_url"] = info.text;
         req["response"] = "yes";

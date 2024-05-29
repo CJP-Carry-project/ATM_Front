@@ -4,25 +4,28 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json.Linq;
+using TMPro;
+using UnityEngine.UIElements;
 
 public class Login : MonoBehaviour, HttpRequest
 {
     private bool isLogin = false;
     private bool isClick = false;
-
-    public void ExitProgram()
-    {
-        Debug.Log("프로그램을 종료합니다.");
-        Application.Quit();
-    }
+    [SerializeField] private TMP_InputField id;
+    [SerializeField] private TMP_InputField pw;
+    
     public void TryLogin() //서버에게 로그인 요청하기
     {
         if (!isLogin) //로그인이 되어있지않다면
         {
             if (!isClick)
             {
+                JObject json = new JObject();
+                json["id"] = id.text;
+                json["pw"] = pw.text;
+                MyIDInfo.myId = id.text;
                 isClick = true;
-                // StartCoroutine(PostReq("http://202.31.202.9:80/authorize", "login"));
+                StartCoroutine(PostReq("http://202.31.202.9:80/login", json.ToString()));
                 SceneManager.LoadScene("MusicRoom");
             }
             else
@@ -39,12 +42,10 @@ public class Login : MonoBehaviour, HttpRequest
     public IEnumerator PostReq(string url, string data)
     {
         Debug.Log(data);
-        // JSON 데이터 준비
-        string json = "{\"msg\":\"" + data + "\"}";
 
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
             webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
             webRequest.SetRequestHeader("Content-Type", "application/json");
@@ -66,19 +67,19 @@ public class Login : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
-                    //URL 열기 -> 사용자가 카카오 인증하도록
-                    // JSON 데이터 파싱
-                    JObject url_json = JObject.Parse(webRequest.downloadHandler.text);
-                    string openUrl = (string)url_json["open_url"];
-                    Debug.Log(openUrl);
-                    Application.OpenURL(openUrl);
-                }
-
-                if (webRequest.responseCode == 200)
-                {
-                    SceneManager.LoadScene("MusicRoom");
+                    JObject login_json = JObject.Parse(webRequest.downloadHandler.text);
+                    bool result = (bool)login_json["result"];
+                    if (result)
+                    {
+                        LoadSceneController.LoadScene("MusicRoom");
+                    }
+                    else
+                    {
+                        SceneManager.LoadScene("init");
+                    }
                 }
             }
         }
+        isClick = false;
     }
 }

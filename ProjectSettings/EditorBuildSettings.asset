@@ -5,12 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/TestScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/init.unity
+    guid: b1a66c4cbbd57384e9d11df1da5ff298
   - enabled: 1
     path: Assets/Scenes/Login.unity
-    guid: b1a66c4cbbd57384e9d11df1da5ff298
+    guid: b9e9738651e0f8f48a882ae9e8a4cf99
+  - enabled: 1
+    path: Assets/Scenes/Register.unity
+    guid: da02da6d9f01a1e4b933486c0737672b
   - enabled: 1
     path: Assets/Scenes/MusicRoom.unity
     guid: e16aacddcbd38c342b26e1e0d9d7fac6
@@ -20,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MusicSheetUI.unity
     guid: 6a8b892a704fbef43acb1f3b0c76adbc
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 39e3bd80e83cd2b499b3d26144ac95f3
   m_configObjects: {}
