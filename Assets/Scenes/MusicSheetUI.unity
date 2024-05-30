@@ -1436,6 +1436,7 @@ MonoBehaviour:
   rightSheet: {fileID: 119039421}
   endImg: {fileID: 2800000, guid: e2a2f73d5ae20e54d8c688070bb20dba, type: 3}
   successAudio: {fileID: 2018191251}
+  loading: {fileID: 2080134131}
 --- !u!1 &2018191251
 GameObject:
   m_ObjectHideFlags: 0
