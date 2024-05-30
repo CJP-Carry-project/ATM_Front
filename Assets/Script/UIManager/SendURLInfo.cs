@@ -64,8 +64,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
             
             // 인증서 검증을 무시하기 위해 CertificateHandler 설정
             webRequest.certificateHandler = new BypassCertificate();
-            loading.SetActive(true);
-            returnBtn.SetActive(false);
+            
             //요청 보내기
             yield return webRequest.SendWebRequest();
             
@@ -97,7 +96,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
         }
     }
     //URL 정보 보내기
-    public IEnumerator PostURLInfoReq(string url, string data)
+    private IEnumerator PostURLInfoReq(string url, string data)
     {
         //Json 데이터 준비
         string json = "{\"youtube_url\":\"" + data + "\"}";
@@ -114,7 +113,7 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
             
             //요청 보내기
             yield return webRequest.SendWebRequest();
-
+            yield return StartCoroutine(LoadingTime());
             if (webRequest.result == UnityWebRequest.Result.ConnectionError ||
                 webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
@@ -172,5 +171,14 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     {
         save_title = title_info.text;
         child.SetActive(false);
+    }
+
+    private IEnumerator LoadingTime()
+    {
+        loading.SetActive(true);
+        returnBtn.SetActive(false);
+        yield return new WaitForSeconds(60f);
+        loading.SetActive(false);
+        returnBtn.SetActive(true);
     }
 }
