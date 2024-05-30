@@ -14,6 +14,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
     [SerializeField] private Image rightSheet; //오른쪽
     [SerializeField] private Texture2D endImg;
     [SerializeField] private GameObject successAudio;
+    [SerializeField] private GameObject loading;
     private List<Sprite> sheetList = new List<Sprite>();
     private int leftIndex = 0;
     private int rightIndex = 1;
@@ -42,6 +43,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
             // 인증서 검증을 무시하기 위해 CertificateHandler 설정
             webRequest.certificateHandler = new BypassCertificate();
             
+            loading.SetActive(true);
             //요청 보내기
             yield return webRequest.SendWebRequest();
 
@@ -71,6 +73,7 @@ public class MusicSheet : MonoBehaviour, HttpRequest
                             sheetList.Add(LoadImageFromBytes(binaryData));
                         }
                     }
+                    loading.SetActive(false);
                     ShowSheet(leftIndex, rightIndex);
                     successAudio.GetComponent<AudioSource>().Play();
                 }

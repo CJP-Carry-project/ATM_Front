@@ -13,6 +13,8 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
     [SerializeField] private Image thumnail_img;
     [SerializeField] private TMP_InputField title_info;
     [SerializeField] private GameObject successAudio;
+    [SerializeField] private GameObject loading;
+    [SerializeField] private GameObject returnBtn;
     private string save_title = "";
     private string save_img = "";
     private GameObject child;
@@ -34,19 +36,6 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
         {
             Debug.Log(save_title);
             StartCoroutine(PostReq("http://202.31.202.9:80/save", save_title));
-        }
-        else
-        {
-            Debug.Log("사전 Post 작업 진행 중");
-        }
-    }
-
-    public void SendInfoForPiano() //서버에게 URL 정보 보내기 [피아노 악보 채보 버튼 이벤트]
-    {
-        if (!isPost)
-        {
-            Debug.Log(save_title);
-            StartCoroutine(PostReq("http://202.31.202.9:80/piano", save_title));
         }
         else
         {
@@ -75,7 +64,8 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
             
             // 인증서 검증을 무시하기 위해 CertificateHandler 설정
             webRequest.certificateHandler = new BypassCertificate();
-            
+            loading.SetActive(true);
+            returnBtn.SetActive(false);
             //요청 보내기
             yield return webRequest.SendWebRequest();
             
@@ -90,11 +80,12 @@ public class SendURLInfo : MonoBehaviour, HttpRequest
 
                 if (webRequest.responseCode == 200)
                 {
-                    Debug.Log("여기까지 정상 성공");
                     JObject rec = JObject.Parse(webRequest.downloadHandler.text);
                     string result = (string)rec["message"];
                     Debug.Log(result);
                     successAudio.GetComponent<AudioSource>().Play();
+                    loading.SetActive(false);
+                    returnBtn.SetActive(true);
                 }
                 else
                 {

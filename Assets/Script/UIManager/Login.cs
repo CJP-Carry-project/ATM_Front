@@ -71,7 +71,7 @@ public class Login : MonoBehaviour, HttpRequest
                     bool result = (bool)login_json["result"];
                     if (result)
                     {
-                        LoadSceneController.LoadScene("MusicRoom");
+                        SceneManager.LoadScene("MusicRoom");
                     }
                     else
                     {

@@ -11,12 +11,6 @@ public class SceneController : MonoBehaviour
         SceneManager.LoadScene("MusicRoom");
     }
 
-    public void goInitUI()
-    {
-        Debug.Log("처음 화면으로 돌아갑니다.");
-        SceneManager.LoadScene("init");
-    }
-
     public void goToLogin()
     {
         Debug.Log("로그인으로 이동");

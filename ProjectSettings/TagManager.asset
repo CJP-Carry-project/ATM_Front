@@ -9,6 +9,7 @@ TagManager:
   - Setting
   - PlayMidi
   - Screen
+  - Loading
   layers:
   - Default
   - TransparentFX

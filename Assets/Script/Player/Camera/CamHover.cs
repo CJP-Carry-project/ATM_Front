@@ -76,7 +76,7 @@ public class CamHover : MonoBehaviour, HttpRequest
 
             if (type == 2) //악보 결과로
             {
-                LoadSceneController.LoadScene("MusicSheetUI");
+                SceneManager.LoadScene("MusicSheetUI");
             }
 
             if (type == 3) //midi
