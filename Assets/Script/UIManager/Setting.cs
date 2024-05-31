@@ -11,6 +11,7 @@ public class Setting : MonoBehaviour, HttpRequest
     [SerializeField] private GameObject player;
     public void TryLogOut()
     {
+        MyIDInfo.myId = ""; //ID 초기화
         SceneManager.LoadScene("init");
     }
     public void TrySignOut()

@@ -13,11 +13,17 @@ public class Register : MonoBehaviour, HttpRequest
     [SerializeField] private TMP_InputField phoneNum;
     public void TryRegister()
     {
-        JObject json = new JObject();
-        json["id"] = id.text;
-        json["pw"] = pw.text;
-        json["phone"] = phoneNum.text;
-        StartCoroutine(PostReq("http://202.31.202.9:80/register", json.ToString()));
+        if(!string.IsNullOrWhiteSpace(id.text) && !string.IsNullOrWhiteSpace(pw.text) && !string.IsNullOrWhiteSpace(phoneNum.text)){
+            JObject json = new JObject();
+            json["id"] = id.text;
+            json["pw"] = pw.text;
+            json["phone"] = phoneNum.text;
+            StartCoroutine(PostReq("http://202.31.202.9:80/register", json.ToString()));
+        }
+        else
+        {
+            SceneManager.LoadScene("init");
+        }
     }
     
     public IEnumerator PostReq(string url, string data)
