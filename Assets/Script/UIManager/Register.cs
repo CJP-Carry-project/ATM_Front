@@ -2,15 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Register : MonoBehaviour, HttpRequest
 {
     [SerializeField] private TMP_InputField id;
     [SerializeField] private TMP_InputField pw;
     [SerializeField] private TMP_InputField phoneNum;
+    [SerializeField] private GameObject failIcon;
+    private float delay = 5f;
     public void TryRegister()
     {
         if(!string.IsNullOrWhiteSpace(id.text) && !string.IsNullOrWhiteSpace(pw.text) && !string.IsNullOrWhiteSpace(phoneNum.text)){
@@ -62,10 +66,21 @@ public class Register : MonoBehaviour, HttpRequest
                     }
                     else
                     {
+                        yield return StartCoroutine(failIconDisableAfterSeconds());
+                        id.text = "";
+                        pw.text = "";
+                        phoneNum.text = "";
                         SceneManager.LoadScene("init"); //실패 시 초기 화면으로
                     }
                 }
             }
         }
+    }
+
+    private IEnumerator failIconDisableAfterSeconds()
+    {
+        failIcon.SetActive(true);
+        yield return new WaitForSeconds(delay);
+        failIcon.SetActive(false);
     }
 }

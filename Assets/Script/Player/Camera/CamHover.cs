@@ -84,6 +84,11 @@ public class CamHover : MonoBehaviour, HttpRequest
                 StartCoroutine(PostReq("http://202.31.202.9:80/midi_recent", "midi plz"));
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            midiPlayer.GetComponent<SongPlayer>().Stop();
+        }
     }
 
     public IEnumerator PostReq(string url, string data)

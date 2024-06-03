@@ -13,6 +13,8 @@ public class Login : MonoBehaviour, HttpRequest
     private bool isClick = false;
     [SerializeField] private TMP_InputField id;
     [SerializeField] private TMP_InputField pw;
+    [SerializeField] private GameObject failIcon;
+    private float delay = 5f;
     
     public void TryLogin() //서버에게 로그인 요청하기
     {
@@ -26,7 +28,6 @@ public class Login : MonoBehaviour, HttpRequest
                 MyIDInfo.myId = id.text;
                 isClick = true;
                 StartCoroutine(PostReq("http://202.31.202.9:80/login", json.ToString()));
-                SceneManager.LoadScene("MusicRoom");
             }
             else
             {
@@ -41,8 +42,6 @@ public class Login : MonoBehaviour, HttpRequest
 
     public IEnumerator PostReq(string url, string data)
     {
-        Debug.Log(data);
-
         using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(data);
@@ -75,11 +74,18 @@ public class Login : MonoBehaviour, HttpRequest
                     }
                     else
                     {
+                        yield return StartCoroutine(failIconDisableAfterSeconds());
                         SceneManager.LoadScene("init");
                     }
                 }
             }
         }
         isClick = false;
+    }
+    private IEnumerator failIconDisableAfterSeconds()
+    {
+        failIcon.SetActive(true);
+        yield return new WaitForSeconds(delay);
+        failIcon.SetActive(false);
     }
 }
